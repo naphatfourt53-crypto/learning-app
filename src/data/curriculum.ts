@@ -2,9 +2,19 @@
 // ครอบคลุม 4 วิชา: OOP, Calculus, React, Genetics
 // แต่ละวิชามี: บทเรียน + พื้นฐานที่ต้องรู้ก่อน + บทเรียนต่อยอด + แหล่งข้อมูลเพิ่มเติม
 
+export interface LessonSection {
+  heading: string;
+  body: string;
+  example?: string;
+  formula?: string;
+  warning?: string;
+}
+
 export interface Lesson {
   title: string;
   summary: string;
+  /** บทสอนแบบละเอียด: ถ้ามี หน้าเว็บจะเรนเดอร์เป็นบทเรียนจริง */
+  sections?: LessonSection[];
 }
 
 export interface TopicLink {
@@ -26,6 +36,8 @@ export interface Subject {
   category: string;
   level: string;
   duration: string;
+  /** แถบชั้นเรียน เช่น "ม.ต้น", "มหาวิทยาลัย/ทั่วไป" — ใช้จัดกลุ่มในห้องสมุด */
+  gradeBand?: string;
   lessons: Lesson[];
   prerequisites: TopicLink[];
   nextSteps: TopicLink[];
@@ -256,6 +268,10 @@ export const SUBJECTS: Subject[] = [
   },
 ];
 
+import { MS_SUBJECTS } from "./ms-curriculum";
+
+export const ALL_SUBJECTS: Subject[] = [...SUBJECTS, ...MS_SUBJECTS];
+
 export function getSubject(id: string): Subject | undefined {
-  return SUBJECTS.find((s) => s.id === id);
+  return ALL_SUBJECTS.find((s) => s.id === id);
 }

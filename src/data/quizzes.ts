@@ -1,12 +1,30 @@
-// คลังข้อสอบ Before/After — ย้ายจากโปรเจกต์เก่า LearnStep
+// คลังข้อสอบ Before/After — ย้ายจากโปรเจกต์เก่า LearnStep + ชุด ม.ต้น
 // ทุกข้อมี: ตัวเลือก + เฉลยละเอียด (บอกว่าทำไมถูก/ผิด) + จุดที่มักเข้าใจผิด
+//
+// รูปแบบข้อสอบกันเดา (anti-guess):
+// - "single": เลือก 1 ข้อ (ค่าเริ่มต้น, ใช้กับข้อเก่าทั้งหมด)
+// - "multi": เลือก "ทุกข้อที่ถูก" — ต้องถูกครบทุกตัวเลือกย่อยถึงจะได้คะแนน
+// - "twotier": สองชั้น — ตอบคำตอบ (tier 1) แล้วต้องเลือกเหตุผลที่ถูก (tier 2)
+//   เดามั่วถูกทั้งคู่ยากกว่าข้อเดี่ยวมาก (1/4 → ~1/16)
+
+export type QuestionKind = "single" | "multi" | "twotier";
 
 export interface QuizQuestion {
   id: string;
+  kind?: QuestionKind;
   scenario?: string;
   question: string;
   choices: string[];
-  correctIndex: number;
+  /** ใช้กับ kind=single และ tier 1 ของ twotier */
+  correctIndex?: number;
+  /** ใช้กับ kind=multi: ดัชนีของ "ทุก" ตัวเลือกที่ถูก */
+  correctIndices?: number[];
+  /** ใช้กับ kind=twotier: คำถามชั้นเหตุผล */
+  tier2?: {
+    question: string;
+    choices: string[];
+    correctIndex: number;
+  };
   explanation: string;
   misconception: string;
 }
@@ -14,6 +32,8 @@ export interface QuizQuestion {
 export interface QuizSet {
   title: string;
   desc: string;
+  /** เกณฑ์ผ่าน (%) — ไม่ถึง = ต้องกลับไปทบทวนบทเรียนก่อน */
+  passingScore?: number;
   questions: QuizQuestion[];
 }
 
@@ -357,6 +377,13 @@ export const QUIZZES: Record<string, SubjectQuiz> = {
   },
 };
 
+import { MS_QUIZZES } from "./ms-quizzes";
+
+const ALL_QUIZZES: Record<string, SubjectQuiz> = {
+  ...QUIZZES,
+  ...MS_QUIZZES,
+};
+
 export function getQuiz(subjectId: string): SubjectQuiz | undefined {
-  return QUIZZES[subjectId];
+  return ALL_QUIZZES[subjectId];
 }

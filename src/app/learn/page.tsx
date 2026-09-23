@@ -1,8 +1,42 @@
 import Link from "next/link";
-import { SUBJECTS } from "@/data/curriculum";
-import { QUIZZES } from "@/data/quizzes";
+import { ALL_SUBJECTS, type Subject } from "@/data/curriculum";
+import { getQuiz } from "@/data/quizzes";
+
+function SubjectCard({ s }: { s: Subject }) {
+  const q = getQuiz(s.id);
+  const count =
+    (q?.before.questions.length ?? 0) + (q?.after.questions.length ?? 0);
+  return (
+    <Link
+      href={`/learn/${s.id}`}
+      className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
+    >
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <span className="rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700">
+          {s.category}
+        </span>
+        <span className="text-xs font-medium text-slate-400">
+          {s.level} • {s.duration}
+        </span>
+      </div>
+      <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-700">
+        {s.title}
+      </h3>
+      <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500">
+        {s.desc}
+      </p>
+      <div className="mt-4 flex items-center gap-4 text-xs text-slate-500">
+        <span>📖 {s.lessons.length} บทเรียน</span>
+        <span>📝 {count} ข้อสอบ</span>
+        <span>📦 {s.resources.length} แหล่งข้อมูล</span>
+      </div>
+    </Link>
+  );
+}
 
 export default function LearnPage() {
+  const ms = ALL_SUBJECTS.filter((s) => s.gradeBand === "ม.ต้น");
+  const rest = ALL_SUBJECTS.filter((s) => s.gradeBand !== "ม.ต้น");
   return (
     <div className="min-h-screen bg-slate-100">
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
@@ -41,40 +75,22 @@ export default function LearnPage() {
           แหล่งข้อมูลเพิ่มเติม และแบบทดสอบ Before / After
         </p>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {SUBJECTS.map((s) => {
-            const q = QUIZZES[s.id];
-            const count =
-              (q?.before.questions.length ?? 0) +
-              (q?.after.questions.length ?? 0);
-            return (
-              <Link
-                key={s.id}
-                href={`/learn/${s.id}`}
-                className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
-              >
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span className="rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700">
-                    {s.category}
-                  </span>
-                  <span className="text-xs font-medium text-slate-400">
-                    {s.level} • {s.duration}
-                  </span>
-                </div>
-                <h2 className="text-lg font-bold text-slate-900 group-hover:text-sky-700">
-                  {s.title}
-                </h2>
-                <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500">
-                  {s.desc}
-                </p>
-                <div className="mt-4 flex items-center gap-4 text-xs text-slate-500">
-                  <span>📖 {s.lessons.length} บทเรียน</span>
-                  <span>📝 {count} ข้อสอบ</span>
-                  <span>📦 {s.resources.length} แหล่งข้อมูล</span>
-                </div>
-              </Link>
-            );
-          })}
+        <h2 className="mt-8 text-lg font-bold text-slate-900">
+          🎒 วิทย์-คณิต ม.ต้น
+        </h2>
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {ms.map((s) => (
+            <SubjectCard key={s.id} s={s} />
+          ))}
+        </div>
+
+        <h2 className="mt-8 text-lg font-bold text-slate-900">
+          🎓 วิชาขั้นสูง (จาก LearnStep)
+        </h2>
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {rest.map((s) => (
+            <SubjectCard key={s.id} s={s} />
+          ))}
         </div>
       </main>
     </div>

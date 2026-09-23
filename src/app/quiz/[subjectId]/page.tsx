@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SUBJECTS, getSubject } from "@/data/curriculum";
+import { ALL_SUBJECTS, getSubject } from "@/data/curriculum";
 import { getQuiz } from "@/data/quizzes";
 import QuizRunner from "@/components/QuizRunner";
 
 export function generateStaticParams() {
-  return SUBJECTS.map((s) => ({ subjectId: s.id }));
+  return ALL_SUBJECTS.map((s) => ({ subjectId: s.id }));
 }
 
 export default async function QuizSubjectPage({
@@ -50,12 +50,17 @@ export default async function QuizSubjectPage({
           {subject.title}
         </h1>
         <p className="mt-1.5 text-sm text-slate-500 sm:text-base">
-          เลือก Before class เพื่อวัดพื้นฐาน หรือ After class เพื่อวัดผลหลังเรียน
-          — ทุกข้อมีเฉลยละเอียด
+          ข้อสอบกันเดา (เลือกทุกข้อที่ถูก + 2 ชั้นตอบ-เหตุผล) — ต้องผ่าน
+          Before ก่อน After ถึงจะปลดล็อก — ทุกข้อมีเฉลยละเอียด
         </p>
 
         <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 md:p-8">
-          <QuizRunner before={quiz.before} after={quiz.after} />
+          <QuizRunner
+            subjectId={subject.id}
+            subjectTitle={subject.title}
+            before={quiz.before}
+            after={quiz.after}
+          />
         </div>
       </main>
     </div>

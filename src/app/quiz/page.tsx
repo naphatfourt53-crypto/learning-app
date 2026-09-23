@@ -1,14 +1,6 @@
 import Link from "next/link";
+import { ALL_SUBJECTS } from "@/data/curriculum";
 import { getQuiz } from "@/data/quizzes";
-
-const SUBJECT_IDS = ["oop", "calculus", "react", "genetics"] as const;
-
-const NAMES: Record<string, string> = {
-  oop: "การเขียนโปรแกรมเชิงวัตถุ (OOP)",
-  calculus: "แคลคูลัสและอนุพันธ์",
-  react: "การพัฒนาเว็บแอปด้วย React",
-  genetics: "พันธุศาสตร์ระดับโมเลกุล",
-};
 
 export default function QuizIndexPage() {
   return (
@@ -39,17 +31,17 @@ export default function QuizIndexPage() {
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {SUBJECT_IDS.map((id) => {
-            const q = getQuiz(id);
+          {ALL_SUBJECTS.map((s) => {
+            const q = getQuiz(s.id);
             if (!q) return null;
             return (
               <Link
-                key={id}
-                href={`/quiz/${id}`}
+                key={s.id}
+                href={`/quiz/${s.id}`}
                 className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
               >
                 <h2 className="text-lg font-bold text-slate-900 group-hover:text-emerald-700">
-                  {NAMES[id]}
+                  {s.title}
                 </h2>
                 <p className="mt-1.5 text-sm text-slate-500">
                   Before {q.before.questions.length} ข้อ • After{" "}

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SUBJECTS, getSubject } from "@/data/curriculum";
+import { ALL_SUBJECTS, getSubject } from "@/data/curriculum";
 import { getQuiz } from "@/data/quizzes";
 
 export function generateStaticParams() {
-  return SUBJECTS.map((s) => ({ subjectId: s.id }));
+  return ALL_SUBJECTS.map((s) => ({ subjectId: s.id }));
 }
 
 export default async function SubjectPage({
@@ -63,19 +63,51 @@ export default async function SubjectPage({
 
         {/* บทเรียน */}
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 md:p-8">
-          <h2 className="text-xl font-bold text-slate-900">📖 บทเรียน</h2>
-          <div className="mt-4 space-y-4">
+          <h2 className="text-xl font-bold text-slate-900">
+            📖 บทเรียน (อ่านให้เข้าใจก่อนทำข้อสอบ)
+          </h2>
+          <div className="mt-4 space-y-5">
             {subject.lessons.map((l, i) => (
               <article
                 key={i}
-                className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+                className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 sm:p-6"
               >
-                <h3 className="text-[15px] font-semibold text-slate-900">
+                <h3 className="text-base font-bold text-slate-900 sm:text-lg">
                   {l.title}
                 </h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                   {l.summary}
                 </p>
+                {l.sections?.map((s, j) => (
+                  <div
+                    key={j}
+                    className="mt-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+                  >
+                    <h4 className="text-[15px] font-bold text-sky-800">
+                      {s.heading}
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                      {s.body}
+                    </p>
+                    {s.formula && (
+                      <p className="mt-2.5 rounded-lg bg-slate-900 px-3.5 py-2.5 font-mono text-[13px] text-emerald-300">
+                        📐 {s.formula}
+                      </p>
+                    )}
+                    {s.example && (
+                      <p className="mt-2.5 rounded-lg bg-emerald-50 px-3.5 py-2.5 text-sm leading-relaxed text-emerald-900">
+                        <span className="font-bold">ตัวอย่าง: </span>
+                        {s.example}
+                      </p>
+                    )}
+                    {s.warning && (
+                      <p className="mt-2.5 rounded-lg bg-amber-50 px-3.5 py-2.5 text-sm leading-relaxed text-amber-900">
+                        <span className="font-bold">⚠️ ระวัง: </span>
+                        {s.warning}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </article>
             ))}
           </div>
