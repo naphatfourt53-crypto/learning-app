@@ -46,13 +46,19 @@ export default function QuizRunner({
   subjectTitle,
   before,
   after,
+  /** ล็อกโหมดเดียว (ใช้ฝังในโฟลว์นำเรียน) — ซ่อนปุ่มสลับโหมด */
+  lockMode,
+  /** แจ้งผลเมื่อทำครบชุด (ใช้โฟลว์นำเรียนเดินหน้าต่อ) */
+  onFinish,
 }: {
   subjectId: string;
   subjectTitle: string;
   before: QuizSet;
   after: QuizSet;
+  lockMode?: Mode;
+  onFinish?: (mode: Mode, percent: number) => void;
 }) {
-  const [mode, setMode] = useState<Mode>("before");
+  const [mode, setMode] = useState<Mode>(lockMode ?? "before");
   const [index, setIndex] = useState(0);
   const [single, setSingle] = useState<number | null>(null);
   const [multi, setMulti] = useState<number[]>([]);
@@ -143,6 +149,7 @@ export default function QuizRunner({
       } catch {
         /* private mode — ข้ามการจำคะแนน */
       }
+      onFinish?.(mode, percent);
     } else {
       setIndex((v) => v + 1);
       resetQuestion();
@@ -163,12 +170,14 @@ export default function QuizRunner({
 
   return (
     <div className="space-y-6">
-      {/* Toggle */}
-      <div
-        role="tablist"
-        aria-label="เลือกแบบทดสอบ"
-        className="inline-flex w-full rounded-full border border-slate-200 bg-slate-100 p-1.5 sm:w-auto"
-      >
+      {/* Toggle — ซ่อนเมื่อถูกล็อกโหมดในโฟลว์นำเรียน */}
+      {!lockMode && (
+        <>
+          <div
+            role="tablist"
+            aria-label="เลือกแบบทดสอบ"
+            className="inline-flex w-full rounded-full border border-slate-200 bg-slate-100 p-1.5 sm:w-auto"
+          >
         <button
           role="tab"
           aria-selected={isBefore}
@@ -203,17 +212,19 @@ export default function QuizRunner({
             </span>
           )}
         </button>
-      </div>
+          </div>
 
-      <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-500">
-        <input
-          type="checkbox"
-          checked={freeMode}
-          onChange={(e) => setFreeMode(e.target.checked)}
-          className="h-4 w-4 accent-slate-900"
-        />
-        🔓 โหมดอิสระ: ข้ามเกณฑ์ผ่าน (สำหรับทบทวน/ทดลองทำ)
-      </label>
+          <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-500">
+            <input
+              type="checkbox"
+              checked={freeMode}
+              onChange={(e) => setFreeMode(e.target.checked)}
+              className="h-4 w-4 accent-slate-900"
+            />
+            🔓 โหมดอิสระ: ข้ามเกณฑ์ผ่าน (สำหรับทบทวน/ทดลองทำ)
+          </label>
+        </>
+      )}
 
       <div>
         <h2 className="text-lg font-bold text-slate-900 sm:text-xl">

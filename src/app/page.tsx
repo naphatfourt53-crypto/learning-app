@@ -26,6 +26,7 @@ export default function Home() {
             <Link href="/" className="hover:text-slate-900">หน้าหลัก</Link>
             <Link href="/learn" className="hover:text-slate-900">บทเรียน</Link>
             <Link href="/quiz" className="hover:text-slate-900">แบบทดสอบ</Link>
+            <Link href="/practice" className="hover:text-slate-900">ฝึกเอง 🎯</Link>
           </nav>
           <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
             เข้าสู่ระบบ
@@ -43,6 +44,20 @@ export default function Home() {
             ส่งเนื้อหาที่อยากเรียน → เลือกหัวข้อที่ใกล้เคียง → ทำแบบทดสอบ
             Before / After เพื่อวัดพัฒนาการ
           </p>
+          <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
+            <Link
+              href="/learn"
+              className="rounded-xl bg-slate-900 px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-slate-700"
+            >
+              📚 เปิดคลังบทเรียน (15 วิชา)
+            </Link>
+            <Link
+              href="/practice"
+              className="rounded-xl bg-white px-5 py-2.5 text-center text-sm font-semibold text-slate-800 ring-1 ring-slate-300 hover:bg-slate-50"
+            >
+              🎯 สร้างชุดฝึกเอง
+            </Link>
+          </div>
         </div>
 
         <InputSection />

@@ -9,9 +9,13 @@
 
 export type QuestionKind = "single" | "multi" | "twotier";
 
+export type Difficulty = "easy" | "medium" | "hard";
+
 export interface QuizQuestion {
   id: string;
   kind?: QuestionKind;
+  /** ระดับความยาก — ใช้ฟิลเตอร์ในโหมดฝึกแบบกำหนดเอง (ค่าเริ่มต้น medium) */
+  difficulty?: Difficulty;
   scenario?: string;
   question: string;
   choices: string[];
@@ -378,12 +382,30 @@ export const QUIZZES: Record<string, SubjectQuiz> = {
 };
 
 import { MS_QUIZZES } from "./ms-quizzes";
+import { EXTRA_QUIZZES } from "./extra-quizzes";
 
 const ALL_QUIZZES: Record<string, SubjectQuiz> = {
   ...QUIZZES,
   ...MS_QUIZZES,
+  ...EXTRA_QUIZZES,
 };
 
 export function getQuiz(subjectId: string): SubjectQuiz | undefined {
   return ALL_QUIZZES[subjectId];
+}
+
+export interface BankItem {
+  subjectId: string;
+  mode: "before" | "after";
+  question: QuizQuestion;
+}
+
+/** คลังข้อรวมทุกวิชา — ใช้สร้างแบบทดสอบแบบกำหนดเอง */
+export function getQuestionBank(): BankItem[] {
+  const out: BankItem[] = [];
+  for (const [subjectId, sq] of Object.entries(ALL_QUIZZES)) {
+    for (const q of sq.before.questions) out.push({ subjectId, mode: "before", question: q });
+    for (const q of sq.after.questions) out.push({ subjectId, mode: "after", question: q });
+  }
+  return out;
 }

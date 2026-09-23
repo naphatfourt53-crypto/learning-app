@@ -269,8 +269,9 @@ export const SUBJECTS: Subject[] = [
 ];
 
 import { MS_SUBJECTS } from "./ms-curriculum";
+import { EXTRA_SUBJECTS } from "./extra-curriculum";
 
-export const ALL_SUBJECTS: Subject[] = [...SUBJECTS, ...MS_SUBJECTS];
+export const ALL_SUBJECTS: Subject[] = [...SUBJECTS, ...MS_SUBJECTS, ...EXTRA_SUBJECTS];
 
 export function getSubject(id: string): Subject | undefined {
   return ALL_SUBJECTS.find((s) => s.id === id);

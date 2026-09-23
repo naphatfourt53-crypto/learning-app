@@ -35,8 +35,13 @@ function SubjectCard({ s }: { s: Subject }) {
 }
 
 export default function LearnPage() {
-  const ms = ALL_SUBJECTS.filter((s) => s.gradeBand === "ม.ต้น");
-  const rest = ALL_SUBJECTS.filter((s) => s.gradeBand !== "ม.ต้น");
+  const groups: { title: string; ids: string[] }[] = [
+    { title: "🎒 มัธยมต้น (วิทย์-คณิต)", ids: ["sci-m1", "sci-m2", "sci-m3", "math-ms"] },
+    { title: "🎓 มัธยมปลาย", ids: ["math-hs", "physics", "chemistry", "biology", "computing"] },
+    { title: "🌱 ประถม", ids: ["sci-pri", "math-pri"] },
+    { title: "🚀 วิชาขั้นสูง (จาก LearnStep)", ids: ["oop", "calculus", "react", "genetics"] },
+  ];
+  const byId = new Map(ALL_SUBJECTS.map((s) => [s.id, s]));
   return (
     <div className="min-h-screen bg-slate-100">
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
@@ -72,26 +77,22 @@ export default function LearnPage() {
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base">
           เลือกวิชาเพื่อดูบทเรียน พื้นฐานที่ต้องรู้ก่อน บทเรียนต่อยอด
-          แหล่งข้อมูลเพิ่มเติม และแบบทดสอบ Before / After
+          แหล่งข้อมูลเพิ่มเติม และแบบทดสอบ Before / After — หรือกด
+          🧭 เรียนแบบนำทางในหน้าวิชา และ 🎯 สร้างชุดฝึกเองที่หน้าแรก
         </p>
 
-        <h2 className="mt-8 text-lg font-bold text-slate-900">
-          🎒 วิทย์-คณิต ม.ต้น
-        </h2>
-        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {ms.map((s) => (
-            <SubjectCard key={s.id} s={s} />
-          ))}
-        </div>
-
-        <h2 className="mt-8 text-lg font-bold text-slate-900">
-          🎓 วิชาขั้นสูง (จาก LearnStep)
-        </h2>
-        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {rest.map((s) => (
-            <SubjectCard key={s.id} s={s} />
-          ))}
-        </div>
+        {groups.map((g) => (
+          <div key={g.title}>
+            <h2 className="mt-8 text-lg font-bold text-slate-900">{g.title}</h2>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {g.ids.map((id) => {
+                const s = byId.get(id);
+                if (!s) return null;
+                return <SubjectCard key={id} s={s} />;
+              })}
+            </div>
+          </div>
+        ))}
       </main>
     </div>
   );
