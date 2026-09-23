@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const MOCK_TOPICS = [
   {
     id: 1,
@@ -91,9 +93,12 @@ export default function RecommendationSection() {
             <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500">
               {t.desc}
             </p>
-            <button className="mt-4 w-full rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-800 transition group-hover:bg-slate-900 group-hover:text-white">
+            <Link
+              href="/learn"
+              className="mt-4 block w-full rounded-lg bg-slate-100 px-3 py-2 text-center text-sm font-medium text-slate-800 transition group-hover:bg-slate-900 group-hover:text-white"
+            >
               เลือกหัวข้อนี้
-            </button>
+            </Link>
           </article>
         ))}
       </div>

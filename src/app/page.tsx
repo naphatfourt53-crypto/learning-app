@@ -1,3 +1,4 @@
+import Link from "next/link";
 import InputSection from "@/components/InputSection";
 import RecommendationSection from "@/components/RecommendationSection";
 import QuizSection from "@/components/QuizSection";
@@ -22,9 +23,9 @@ export default function Home() {
             </div>
           </div>
           <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 sm:flex">
-            <a href="#" className="hover:text-slate-900">หน้าหลัก</a>
-            <a href="#" className="hover:text-slate-900">บทเรียน</a>
-            <a href="#" className="hover:text-slate-900">แบบทดสอบ</a>
+            <Link href="/" className="hover:text-slate-900">หน้าหลัก</Link>
+            <Link href="/learn" className="hover:text-slate-900">บทเรียน</Link>
+            <Link href="/quiz" className="hover:text-slate-900">แบบทดสอบ</Link>
           </nav>
           <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
             เข้าสู่ระบบ
