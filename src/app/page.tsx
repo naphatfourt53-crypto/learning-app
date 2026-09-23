@@ -6,8 +6,8 @@ import QuizSection from "@/components/QuizSection";
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* Top navbar — minimal */}
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
+      {/* Top navbar — ทึบแสงเพื่อไม่ให้เนื้อหาเลื่อนลอดใต้แล้วดูซ้อน */}
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">

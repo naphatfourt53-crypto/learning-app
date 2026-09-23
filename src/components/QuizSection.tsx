@@ -142,9 +142,8 @@ export default function QuizSection() {
                 <h3 className="text-[15px] font-semibold leading-snug text-slate-900">
                   {q.title}
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">{q.meta}</p>
-                <p className="mt-3 text-xs text-slate-500">
-                  {q.questions} ข้อ • {q.minutes} นาที
+                <p className="mt-1 text-sm text-slate-500">
+                  {q.meta} • ⏱ {q.minutes} นาที
                 </p>
                 <button
                   onClick={() => setStartedId(active ? null : q.id)}
