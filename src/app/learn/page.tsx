@@ -36,7 +36,10 @@ function SubjectCard({ s }: { s: Subject }) {
 
 export default function LearnPage() {
   const groups: { title: string; ids: string[] }[] = [
-    { title: "🎒 มัธยมต้น (วิทย์-คณิต)", ids: ["sci-m1", "sci-m2", "sci-m3", "math-ms"] },
+    { title: "📕 ม.1", ids: ["math-m1", "sci-m1"] },
+    { title: "📗 ม.2", ids: ["math-m2", "sci-m2"] },
+    { title: "📘 ม.3", ids: ["math-m3", "sci-m3"] },
+    { title: "🎒 ม.ต้น (วิชารวม)", ids: ["eng-ms", "thai-ms", "soc-ms"] },
     { title: "🎓 มัธยมปลาย", ids: ["math-hs", "physics", "chemistry", "biology", "computing"] },
     { title: "🌱 ประถม", ids: ["sci-pri", "math-pri"] },
     { title: "🚀 วิชาขั้นสูง (จาก LearnStep)", ids: ["oop", "calculus", "react", "genetics"] },

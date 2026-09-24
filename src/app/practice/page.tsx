@@ -73,7 +73,7 @@ function PracticeBuilder() {
   }, [params]);
   const [tab, setTab] = useState<Tab>("basic");
   const [pickedSubjects, setPickedSubjects] = useState<string[]>(
-    preset ?? ["math-ms"]
+    preset ?? ["math-m1"]
   );
   const [count, setCount] = useState<number | "all">(8);
   const [difficulty, setDifficulty] = useState<"all" | "easy" | "medium" | "hard">("all");
