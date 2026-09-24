@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { QuizQuestion } from "@/data/quizzes";
+import AiHelp from "@/components/AiHelp";
 import MathText from "@/components/MathText";
 
 export interface PracticeItem {
@@ -261,6 +262,9 @@ export default function PracticeRunner({
               ตรวจคำตอบ
             </button>
           )}
+
+          {/* AI ช่วยใบ้/อธิบายเพิ่ม (คีย์ของผู้ใช้เอง) */}
+          <AiHelp question={q} answered={answered} />
 
           {answered && showNow && (
             <div className="mt-4 space-y-2.5">

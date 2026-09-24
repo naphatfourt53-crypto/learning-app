@@ -2,35 +2,34 @@ import Link from "next/link";
 import InputSection from "@/components/InputSection";
 import RecommendationSection from "@/components/RecommendationSection";
 import QuizSection from "@/components/QuizSection";
+import UserButton from "@/components/UserButton";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Top navbar — ทึบแสงเพื่อไม่ให้เนื้อหาเลื่อนลอดใต้แล้วดูซ้อน */}
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
               ✦
             </span>
-            <div>
-              <p className="text-sm font-bold leading-tight text-slate-900">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold leading-tight text-slate-900">
                 Self-Learning
               </p>
-              <p className="text-xs leading-tight text-slate-500">
+              <p className="truncate text-xs leading-tight text-slate-500">
                 เรียนรู้ด้วยตนเอง
               </p>
             </div>
           </div>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 sm:flex">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
             <Link href="/" className="hover:text-slate-900">หน้าหลัก</Link>
             <Link href="/learn" className="hover:text-slate-900">บทเรียน</Link>
             <Link href="/quiz" className="hover:text-slate-900">แบบทดสอบ</Link>
             <Link href="/practice" className="hover:text-slate-900">ฝึกเอง 🎯</Link>
           </nav>
-          <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-            เข้าสู่ระบบ
-          </button>
+          <UserButton />
         </div>
       </header>
 

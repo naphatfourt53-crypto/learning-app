@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { QuizQuestion, QuizSet } from "@/data/quizzes";
+import AiHelp from "@/components/AiHelp";
 import MathText from "@/components/MathText";
 
 type Mode = "before" | "after";
@@ -416,6 +417,9 @@ export default function QuizRunner({
               ตรวจคำตอบ ({multi.length} ข้อที่เลือก)
             </button>
           )}
+
+          {/* AI ช่วยใบ้/อธิบายเพิ่ม (คีย์ของผู้ใช้เอง) */}
+          <AiHelp question={q} answered={answered} />
 
           {answered && (
             <div className="mt-4 space-y-2.5">
