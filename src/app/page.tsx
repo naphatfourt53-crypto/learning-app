@@ -49,7 +49,7 @@ export default function Home() {
               href="/learn"
               className="rounded-xl bg-slate-900 px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-slate-700"
             >
-              📚 เปิดคลังบทเรียน (20 วิชา)
+              📚 เปิดคลังบทเรียน (25 วิชา)
             </Link>
             <Link
               href="/practice"

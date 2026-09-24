@@ -35,13 +35,13 @@ function SubjectCard({ s }: { s: Subject }) {
 }
 
 export default function LearnPage() {
-  const groups: { title: string; ids: string[] }[] = [
-    { title: "📕 ม.1", ids: ["math-m1", "sci-m1"] },
-    { title: "📗 ม.2", ids: ["math-m2", "sci-m2"] },
-    { title: "📘 ม.3", ids: ["math-m3", "sci-m3"] },
-    { title: "🎒 ม.ต้น (วิชารวม)", ids: ["eng-ms", "thai-ms", "soc-ms"] },
-    { title: "🎓 มัธยมปลาย", ids: ["math-hs", "physics", "chemistry", "biology", "computing"] },
-    { title: "🌱 ประถม", ids: ["sci-pri", "math-pri"] },
+  const groups: { title: string; ids: string[]; exam?: string }[] = [
+    { title: "📕 ม.1", ids: ["math-m1", "sci-m1"], exam: "math-m1,sci-m1" },
+    { title: "📗 ม.2", ids: ["math-m2", "sci-m2"], exam: "math-m2,sci-m2" },
+    { title: "📘 ม.3", ids: ["math-m3", "sci-m3"], exam: "math-m3,sci-m3" },
+    { title: "🎒 ม.ต้น (วิชารวม)", ids: ["eng-ms", "thai-ms", "soc-ms"], exam: "eng-ms,thai-ms,soc-ms" },
+    { title: "🎓 มัธยมปลาย", ids: ["math-hs", "physics", "chemistry", "biology", "computing", "thai-hs", "eng-hs", "soc-hs"], exam: "math-hs,physics,chemistry,biology,computing,thai-hs,eng-hs,soc-hs" },
+    { title: "🌱 ประถม", ids: ["sci-pri", "math-pri", "thai-pri", "eng-pri"], exam: "sci-pri,math-pri,thai-pri,eng-pri" },
     { title: "🚀 วิชาขั้นสูง (จาก LearnStep)", ids: ["oop", "calculus", "react", "genetics"] },
   ];
   const byId = new Map(ALL_SUBJECTS.map((s) => [s.id, s]));
@@ -86,7 +86,17 @@ export default function LearnPage() {
 
         {groups.map((g) => (
           <div key={g.title}>
-            <h2 className="mt-8 text-lg font-bold text-slate-900">{g.title}</h2>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <h2 className="text-lg font-bold text-slate-900">{g.title}</h2>
+              {g.exam && (
+                <Link
+                  href={`/practice?subjects=${g.exam}&exam=1`}
+                  className="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+                >
+                  📦 สอบรวมกลุ่มนี้
+                </Link>
+              )}
+            </div>
             <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {g.ids.map((id) => {
                 const s = byId.get(id);

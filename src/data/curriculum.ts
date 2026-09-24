@@ -15,6 +15,10 @@ export interface Lesson {
   summary: string;
   /** บทสอนแบบละเอียด: ถ้ามี หน้าเว็บจะเรนเดอร์เป็นบทเรียนจริง */
   sections?: LessonSection[];
+  /** เกริ่นปูพื้นฐานบทถัดไป เช่น "ต้องแม่น X เพราะบทหน้าจะใช้..." */
+  bridge?: string;
+  /** สรุปเตรียมสอบ: bullet สูตรลัด+จุดออกสอบของบทนี้ */
+  cram?: string[];
 }
 
 export interface TopicLink {

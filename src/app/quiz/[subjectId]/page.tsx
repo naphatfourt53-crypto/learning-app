@@ -49,6 +49,14 @@ export default async function QuizSubjectPage({
         <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
           {subject.title}
         </h1>
+        <div className="mt-3">
+          <Link
+            href={`/practice?subjects=${subject.id}&exam=1`}
+            className="inline-block rounded-xl bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 ring-1 ring-rose-200 hover:bg-rose-100"
+          >
+            📦 สอบรวมทั้งวิชา (ทุกข้อ + จับเวลา)
+          </Link>
+        </div>
         <p className="mt-1.5 text-sm text-slate-500 sm:text-base">
           ข้อสอบกันเดา (เลือกทุกข้อที่ถูก + 2 ชั้นตอบ-เหตุผล) — ต้องผ่าน
           Before ก่อน After ถึงจะปลดล็อก — ทุกข้อมีเฉลยละเอียด

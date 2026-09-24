@@ -71,17 +71,19 @@ function PracticeBuilder() {
     const ids = raw.split(",").filter((id) => ALL_SUBJECTS.some((s) => s.id === id));
     return ids.length > 0 ? ids : null;
   }, [params]);
+  // โหมดสอบรวม (?exam=1): เอาทุกข้อ เฉลยท้ายชุด จับเวลา สลับข้อ
+  const isExam = params.get("exam") === "1";
   const [tab, setTab] = useState<Tab>("basic");
   const [pickedSubjects, setPickedSubjects] = useState<string[]>(
     preset ?? ["math-m1"]
   );
-  const [count, setCount] = useState<number | "all">(8);
+  const [count, setCount] = useState<number | "all">(isExam ? "all" : 8);
   const [difficulty, setDifficulty] = useState<"all" | "easy" | "medium" | "hard">("all");
   const [purpose, setPurpose] = useState<Purpose>("ทบทวนเนื้อหา");
   const [kinds, setKinds] = useState<string[]>(["single", "multi", "twotier"]);
-  const [timed, setTimed] = useState<number | null>(null);
+  const [timed, setTimed] = useState<number | null>(isExam ? 15 : null);
   const [doShuffle, setDoShuffle] = useState(true);
-  const [explain, setExplain] = useState<"now" | "end">("now");
+  const [explain, setExplain] = useState<"now" | "end">(isExam ? "end" : "now");
   const [passing, setPassing] = useState(70);
   const [run, setRun] = useState<{ items: PracticeItem[]; config: PracticeConfig } | null>(null);
 
@@ -171,6 +173,11 @@ function PracticeBuilder() {
             {preset && (
               <p className="mt-2 w-fit rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
                 🎯 มาจากปุ่ม “ข้อสอบย่อย” — เลือกวิชาให้แล้ว ปรับจำนวน/ระดับต่อได้เลย
+              </p>
+            )}
+            {isExam && (
+              <p className="mt-2 w-fit rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+                📦 โหมดสอบรวม — เอาทุกข้อ เฉลยท้ายชุด จับเวลา 15 นาที (ปรับได้ในขั้นสูง)
               </p>
             )}
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Lesson } from "@/data/curriculum";
 import MathText from "@/components/MathText";
 
-type DetailMode = "basic" | "advanced";
+type DetailMode = "basic" | "advanced" | "exam";
 
 interface ViewOpts {
   showFormulas: boolean;
@@ -26,7 +26,7 @@ function readOpts(): { mode: DetailMode; opts: ViewOpts } {
     const raw = localStorage.getItem("learnstep-lesson-view");
     if (raw) {
       const p = JSON.parse(raw) as { mode: DetailMode; opts: ViewOpts };
-      if (p.mode === "basic" || p.mode === "advanced")
+      if (p.mode === "basic" || p.mode === "advanced" || p.mode === "exam")
         return { mode: p.mode, opts: { ...DEFAULT_OPTS, ...p.opts } };
     }
   } catch {
@@ -95,7 +95,7 @@ export default function LessonView({
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
-              📋 ปรับแต่งเบื้องต้น
+              📋 เบื้องต้น
             </button>
             <button
               role="tab"
@@ -107,7 +107,19 @@ export default function LessonView({
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
-              ⚙️ ปรับแต่งขั้นสูง
+              ⚙️ ขั้นสูง
+            </button>
+            <button
+              role="tab"
+              aria-selected={mode === "exam"}
+              onClick={() => persist("exam", opts)}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                mode === "exam"
+                  ? "bg-amber-500 text-white shadow"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              ⚡ สรุปเตรียมสอบ
             </button>
           </div>
         </div>
@@ -167,6 +179,24 @@ export default function LessonView({
               </Link>
             )}
             <p className={`mt-1.5 text-slate-600 ${bodyCls}`}>{l.summary}</p>
+
+            {/* โหมดสรุปเตรียมสอบ: เฉพาะ bullet สูตรลัด+จุดออกสอบ */}
+            {mode === "exam" && (
+              <ul className="mt-3 space-y-1.5">
+                {(l.cram ?? [l.summary]).map((c, k) => (
+                  <li
+                    key={k}
+                    className={`flex items-start gap-2 rounded-lg bg-amber-50 px-3.5 py-2 text-amber-950 ${bodyCls}`}
+                  >
+                    <span aria-hidden>⭐</span>
+                    <span>
+                      <MathText text={c} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
             {mode === "advanced" &&
               l.sections?.map((s, j) => (
                 <div
@@ -198,6 +228,13 @@ export default function LessonView({
                   )}
                 </div>
               ))}
+            {/* สะพานเชื่อมบทถัดไป */}
+            {mode !== "basic" && l.bridge && (
+              <p className={`mt-4 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-sky-900 ${bodyCls}`}>
+                <span className="font-bold">🌉 เกริ่นบทถัดไป: </span>
+                {l.bridge}
+              </p>
+            )}
           </article>
         ))}
       </div>
