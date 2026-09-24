@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { QuizQuestion, QuizSet } from "@/data/quizzes";
+import MathText from "@/components/MathText";
 
 type Mode = "before" | "after";
 type Kind = "single" | "multi" | "twotier";
@@ -292,7 +293,7 @@ export default function QuizRunner({
             </p>
           )}
           <p className="text-[15px] font-semibold leading-relaxed text-slate-900">
-            {q.question}
+            <MathText text={q.question} />
           </p>
 
           {/* ตัวเลือกชั้นที่ 1 */}
@@ -328,7 +329,7 @@ export default function QuizRunner({
                       <span className="mr-2 font-bold text-slate-500">
                         {letter}.
                       </span>
-                      {c}
+                      <MathText text={c} />
                     </span>
                   </label>
                 );
@@ -361,7 +362,7 @@ export default function QuizRunner({
                   <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
                     {letter}
                   </span>
-                  {c}
+                  <MathText text={c} />
                 </button>
               );
             })}
@@ -374,7 +375,7 @@ export default function QuizRunner({
                 ชั้นที่ 2 — เลือกเหตุผลประกอบคำตอบ:
               </p>
               <p className="mt-1 text-sm text-slate-700">
-                {q.tier2.question}
+                <MathText text={q.tier2.question} />
               </p>
               <div className="mt-3 space-y-2.5">
                 {q.tier2.choices.map((c, i) => {
@@ -398,7 +399,7 @@ export default function QuizRunner({
                       <span className="mr-2 font-bold text-slate-500">
                         {["ก", "ข", "ค", "ง"][i]}.
                       </span>
-                      {c}
+                      <MathText text={c} />
                     </button>
                   );
                 })}
@@ -434,7 +435,9 @@ export default function QuizRunner({
                         ? "❌ ยังไม่ถูก (ต้องเลือกให้ครบทุกข้อที่ถูก และไม่เลือกข้อผิด)"
                         : "❌ ยังไม่ถูก"}
                 </p>
-                <p className="mt-1">{q.explanation}</p>
+                <p className="mt-1">
+                  <MathText text={q.explanation} />
+                </p>
               </div>
               <div className="rounded-xl bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
                 <p className="font-bold">💡 จุดที่มักเข้าใจผิด</p>

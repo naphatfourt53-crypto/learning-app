@@ -196,7 +196,7 @@ export default function StudyFlow({
 
       {step === "study" && (
         <div className="space-y-5">
-          <LessonView lessons={subject.lessons} />
+          <LessonView lessons={subject.lessons} subjectId={subject.id} />
           <div className="flex flex-col gap-2.5 sm:flex-row">
             <button
               onClick={() => setStep("after")}
@@ -223,8 +223,9 @@ export default function StudyFlow({
       )}
 
       {step === "after" && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 md:p-8">
-          <QuizRunner
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 md:p-8">
+            <QuizRunner
             subjectId={subject.id}
             subjectTitle={subject.title}
             before={quiz.before}
@@ -238,6 +239,13 @@ export default function StudyFlow({
               setStep("done");
             }}
           />
+          </div>
+          <Link
+            href={`/practice?subjects=${subject.id}`}
+            className="block rounded-2xl border border-violet-200 bg-violet-50 p-4 text-center text-sm font-semibold text-violet-800 hover:bg-violet-100"
+          >
+            🎯 อยากซ้อมเพิ่ม? สร้างข้อสอบย่อยบทนี้เอง (เลือกจำนวน/ระดับ/จับเวลาได้)
+          </Link>
         </div>
       )}
 

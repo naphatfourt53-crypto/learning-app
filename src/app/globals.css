@@ -35,10 +35,10 @@ pre {
     "Segoe UI Symbol", "Noto Sans Symbols 2", monospace;
 }
 
-/* คลาสสำหรับสัญลักษณ์พิเศษโดยเฉพาะ (π ฯลฯ) — ตัวใหญ่ขึ้นนิดให้ดูออก */
+/* คลาสสำหรับสัญลักษณ์พิเศษโดยเฉพาะ (π √ θ Ω ฯลฯ) — ใช้ฟอนต์คณิตที่อ่านออกชัวร์ */
 .math-sym {
-  font-family: "Segoe UI Symbol", "Noto Sans Symbols 2",
-    var(--font-prompt), sans-serif;
+  font-family: "Cambria Math", "Times New Roman", "Segoe UI Symbol",
+    "Noto Sans Symbols 2", serif;
   font-size: 1.08em;
   letter-spacing: 0.01em;
 }

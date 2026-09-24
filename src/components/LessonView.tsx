@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Lesson } from "@/data/curriculum";
+import MathText from "@/components/MathText";
 
 type DetailMode = "basic" | "advanced";
 
@@ -38,7 +40,14 @@ function readOpts(): { mode: DetailMode; opts: ViewOpts } {
  * - เบื้องต้น (basic): โชว์แค่สรุปย่อแต่ละบท
  * - ขั้นสูง (advanced): บทสอนเต็ม + สวิตช์เปิด/ปิด สูตร-ตัวอย่าง-คำเตือน + ขนาดตัวอักษร
  */
-export default function LessonView({ lessons }: { lessons: Lesson[] }) {
+export default function LessonView({
+  lessons,
+  subjectId,
+}: {
+  lessons: Lesson[];
+  /** ถ้าส่งมา แต่ละบทจะมีปุ่ม “ข้อสอบย่อยบทนี้” (ตั้งค่าเองได้ที่ /practice) */
+  subjectId?: string;
+}) {
   const [saved] = useState(readOpts);
   const [mode, setMode] = useState<DetailMode>(saved.mode);
   const [opts, setOpts] = useState<ViewOpts>(saved.opts);
@@ -149,6 +158,14 @@ export default function LessonView({ lessons }: { lessons: Lesson[] }) {
             <h3 className="text-base font-bold text-slate-900 sm:text-lg">
               {l.title}
             </h3>
+            {subjectId && (
+              <Link
+                href={`/practice?subjects=${subjectId}`}
+                className="mt-2 inline-block rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-100"
+              >
+                🎯 ข้อสอบย่อยบทนี้ (เลือก/ตั้งค่าเองได้)
+              </Link>
+            )}
             <p className={`mt-1.5 text-slate-600 ${bodyCls}`}>{l.summary}</p>
             {mode === "advanced" &&
               l.sections?.map((s, j) => (
@@ -159,7 +176,9 @@ export default function LessonView({ lessons }: { lessons: Lesson[] }) {
                   <h4 className="text-[15px] font-bold text-sky-800">
                     {s.heading}
                   </h4>
-                  <p className={`mt-2 text-slate-700 ${bodyCls}`}>{s.body}</p>
+                  <p className={`mt-2 text-slate-700 ${bodyCls}`}>
+                    <MathText text={s.body} />
+                  </p>
                   {opts.showFormulas && s.formula && (
                     <p className="mt-2.5 rounded-lg bg-slate-900 px-3.5 py-2.5 font-mono text-[13px] text-emerald-300">
                       📐 {s.formula}
@@ -168,7 +187,7 @@ export default function LessonView({ lessons }: { lessons: Lesson[] }) {
                   {opts.showExamples && s.example && (
                     <p className={`mt-2.5 rounded-lg bg-emerald-50 px-3.5 py-2.5 text-emerald-900 ${bodyCls}`}>
                       <span className="font-bold">ตัวอย่าง: </span>
-                      {s.example}
+                      <MathText text={s.example} />
                     </p>
                   )}
                   {opts.showWarnings && s.warning && (

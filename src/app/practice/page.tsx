@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ALL_SUBJECTS } from "@/data/curriculum";
 import { getQuestionBank, type QuizQuestion } from "@/data/quizzes";
 import PracticeRunner, {
@@ -46,8 +47,34 @@ const COUNTS = [4, 8, 12] as const;
 const PURPOSES: Purpose[] = ["ทบทวนเนื้อหา", "วัดพื้นฐานก่อนเรียน", "เตรียมสอบจริง"];
 
 export default function PracticePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-100">
+          <main className="mx-auto w-full max-w-4xl px-4 py-10 text-center text-sm text-slate-500">
+            กำลังโหลดห้องสร้างข้อสอบ…
+          </main>
+        </div>
+      }
+    >
+      <PracticeBuilder />
+    </Suspense>
+  );
+}
+
+function PracticeBuilder() {
+  // preset วิชาจากลิงก์ "ข้อสอบย่อยบทนี้" (?subjects=id1,id2)
+  const params = useSearchParams();
+  const preset = useMemo(() => {
+    const raw = params.get("subjects");
+    if (!raw) return null;
+    const ids = raw.split(",").filter((id) => ALL_SUBJECTS.some((s) => s.id === id));
+    return ids.length > 0 ? ids : null;
+  }, [params]);
   const [tab, setTab] = useState<Tab>("basic");
-  const [pickedSubjects, setPickedSubjects] = useState<string[]>(["math-ms"]);
+  const [pickedSubjects, setPickedSubjects] = useState<string[]>(
+    preset ?? ["math-ms"]
+  );
   const [count, setCount] = useState<number | "all">(8);
   const [difficulty, setDifficulty] = useState<"all" | "easy" | "medium" | "hard">("all");
   const [purpose, setPurpose] = useState<Purpose>("ทบทวนเนื้อหา");
@@ -141,6 +168,11 @@ export default function PracticePage() {
               แยกจากสอบ Before/After — ดึงข้อจากคลังทุกวิชามาผสมตามที่ตั้งค่า
               (ตอนนี้ {bank.length} ข้อ)
             </p>
+            {preset && (
+              <p className="mt-2 w-fit rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                🎯 มาจากปุ่ม “ข้อสอบย่อย” — เลือกวิชาให้แล้ว ปรับจำนวน/ระดับต่อได้เลย
+              </p>
+            )}
 
             <div
               role="tablist"

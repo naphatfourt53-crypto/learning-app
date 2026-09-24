@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { QuizQuestion } from "@/data/quizzes";
+import MathText from "@/components/MathText";
 
 export interface PracticeItem {
   subjectTitle: string;
@@ -140,7 +141,9 @@ export default function PracticeRunner({
               {q.scenario}
             </p>
           )}
-          <p className="text-[15px] font-semibold text-slate-900">{q.question}</p>
+          <p className="text-[15px] font-semibold text-slate-900">
+            <MathText text={q.question} />
+          </p>
 
           <div className="mt-4 space-y-2.5">
             {q.choices.map((c, i) => {
@@ -175,7 +178,7 @@ export default function PracticeRunner({
                     />
                     <span>
                       <span className="mr-2 font-bold text-slate-500">{letter}.</span>
-                      {c}
+                      <MathText text={c} />
                     </span>
                   </label>
                 );
@@ -209,7 +212,7 @@ export default function PracticeRunner({
                   }`}
                 >
                   <span className="mr-2 font-bold text-slate-500">{letter}.</span>
-                  {c}
+                  <MathText text={c} />
                 </button>
               );
             })}
@@ -218,7 +221,7 @@ export default function PracticeRunner({
           {kind === "twotier" && single !== null && q.tier2 && (
             <div className="mt-4 rounded-xl border border-violet-200 bg-violet-50/60 p-4">
               <p className="text-sm font-bold text-violet-900">
-                ชั้นที่ 2 — {q.tier2.question}
+                ชั้นที่ 2 — <MathText text={q.tier2.question} />
               </p>
               <div className="mt-3 space-y-2.5">
                 {q.tier2.choices.map((c, i) => (
@@ -242,7 +245,7 @@ export default function PracticeRunner({
                     <span className="mr-2 font-bold text-slate-500">
                       {["ก", "ข", "ค", "ง"][i]}.
                     </span>
-                    {c}
+                    <MathText text={c} />
                   </button>
                 ))}
               </div>
@@ -269,7 +272,9 @@ export default function PracticeRunner({
                 }`}
               >
                 <p className="font-bold">{okNow ? "✅ ถูกต้อง" : "❌ ยังไม่ถูก"}</p>
-                <p className="mt-1">{q.explanation}</p>
+                <p className="mt-1">
+                  <MathText text={q.explanation} />
+                </p>
               </div>
               <button
                 onClick={next}
@@ -317,9 +322,12 @@ export default function PracticeRunner({
                   }`}
                 >
                   <p className="font-semibold text-slate-900">
-                    {results[i] ? "✅" : "❌"} {it.question.question}
+                    {results[i] ? "✅" : "❌"}{" "}
+                    <MathText text={it.question.question} />
                   </p>
-                  <p className="mt-1 text-slate-600">{it.question.explanation}</p>
+                  <p className="mt-1 text-slate-600">
+                    <MathText text={it.question.explanation} />
+                  </p>
                 </div>
               ))}
             </div>

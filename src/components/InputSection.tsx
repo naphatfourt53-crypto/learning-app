@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
+import { ALL_SUBJECTS } from "@/data/curriculum";
 
 type Tab = "text" | "links" | "file";
 
@@ -9,6 +11,13 @@ interface RefLink {
   domain: string;
   kind: string;
   icon: string;
+}
+
+interface SearchHit {
+  subjectId: string;
+  subjectTitle: string;
+  lessonTitle: string;
+  snippet: string;
 }
 
 function parseLink(raw: string): RefLink | null {
@@ -45,11 +54,61 @@ function parseLink(raw: string): RefLink | null {
   return { url: url.toString(), domain: host, kind, icon };
 }
 
+/** ค้นหาบทเรียนจริงจากคลังทุกวิชา — ให้คะแนน title > summary > เนื้อหา */
+function searchLessons(query: string): SearchHit[] {
+  const tokens = query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length > 1);
+  if (tokens.length === 0) return [];
+  const hits: (SearchHit & { score: number })[] = [];
+  for (const s of ALL_SUBJECTS) {
+    for (const l of s.lessons) {
+      const title = l.title.toLowerCase();
+      const summary = l.summary.toLowerCase();
+      const bodies = (l.sections ?? [])
+        .map((x) => `${x.heading} ${x.body}`.toLowerCase())
+        .join(" ");
+      let score = 0;
+      for (const t of tokens) {
+        if (title.includes(t)) score += 3;
+        if (summary.includes(t)) score += 2;
+        if (bodies.includes(t)) score += 1;
+      }
+      // โบนัส: ตรงชื่อวิชา
+      if (tokens.some((t) => s.title.toLowerCase().includes(t))) score += 2;
+      if (score > 0) {
+        const firstBody = l.sections?.[0]?.body ?? l.summary;
+        hits.push({
+          subjectId: s.id,
+          subjectTitle: s.title,
+          lessonTitle: l.title,
+          snippet:
+            firstBody.length > 140 ? firstBody.slice(0, 140) + "…" : firstBody,
+          score,
+        });
+      }
+    }
+  }
+  return hits
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map((h) => ({
+      subjectId: h.subjectId,
+      subjectTitle: h.subjectTitle,
+      lessonTitle: h.lessonTitle,
+      snippet: h.snippet,
+    }));
+}
+
 const TABS: { id: Tab; label: string }[] = [
   { id: "text", label: "✍️ ข้อความ" },
   { id: "links", label: "🔗 ลิงก์อ้างอิง" },
   { id: "file", label: "📎 ไฟล์" },
 ];
+
+const SUGGESTIONS = ["สมการ", "พีทาโกรัส", "เซลล์", "ไฟฟ้า", "ฟังก์ชัน", "พันธุกรรม"];
 
 export default function InputSection() {
   const [tab, setTab] = useState<Tab>("text");
@@ -58,6 +117,8 @@ export default function InputSection() {
   const [linkError, setLinkError] = useState<string | null>(null);
   const [links, setLinks] = useState<RefLink[]>([]);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [results, setResults] = useState<SearchHit[] | null>(null);
+  const [lastQuery, setLastQuery] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const hasContent = text.trim() !== "" || links.length > 0 || fileName !== null;
@@ -79,12 +140,16 @@ export default function InputSection() {
 
   const handleSubmit = () => {
     if (!hasContent) return;
-    const parts: string[] = [];
-    if (text.trim()) parts.push(`ข้อความ: ${text.slice(0, 120)}`);
-    if (links.length > 0)
-      parts.push(`ลิงก์อ้างอิง ${links.length} รายการ:\n${links.map((l) => `• [${l.kind}] ${l.url}`).join("\n")}`);
-    if (fileName) parts.push(`ไฟล์: ${fileName}`);
-    alert(`รับข้อมูลแล้ว!\n${parts.join("\n")}`);
+    // ค้นหาจริงจากคลังบทเรียน (ข้อความ + ชื่อไฟล์ + domain ลิงก์)
+    const query = [
+      text,
+      fileName?.replace(/\.[a-z0-9]+$/i, "").replace(/[_-]+/g, " ") ?? "",
+      ...links.map((l) => l.domain.split(".")[0]),
+    ]
+      .join(" ")
+      .trim();
+    setLastQuery(query);
+    setResults(searchLessons(query));
   };
 
   return (
@@ -98,7 +163,7 @@ export default function InputSection() {
             ส่งเนื้อหาที่อยากเรียน
           </h2>
           <p className="mt-1 text-sm text-slate-500">
-            เลือกวิธีส่งได้ 3 แบบ — ผสมกันได้หมด
+            พิมพ์ชื่อเรื่อง → ระบบค้นหาบทเรียนจริงในคลังให้ทันที
           </p>
         </div>
         <span className="hidden rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 sm:inline-block">
@@ -106,7 +171,6 @@ export default function InputSection() {
         </span>
       </div>
 
-      {/* Tabs — โชว์ทีละโหมดเพื่อไม่ให้รก */}
       <div
         role="tablist"
         aria-label="วิธีส่งข้อมูล"
@@ -135,16 +199,29 @@ export default function InputSection() {
             htmlFor="learning-input"
             className="mb-2 block text-sm font-medium text-slate-700"
           >
-            รายละเอียดบทเรียน
+            ชื่อเรื่องหรือคำอธิบาย (เช่น “สมการ ม.2”, “ไฟฟ้า”)
           </label>
           <textarea
             id="learning-input"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            rows={5}
+            rows={4}
             placeholder="ส่งไฟล์เรียนหรือชื่อเรื่องพร้อมคำอธิบายมาเลย..."
             className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
           />
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="text-xs text-slate-400">ลองค้น:</span>
+            {SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setText(s)}
+                className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-sky-100 hover:text-sky-700"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -246,7 +323,7 @@ export default function InputSection() {
               <>
                 <span className="font-semibold">คลิกเพื่อเลือกไฟล์</span>
                 <span className="text-xs text-slate-400">
-                  PDF / รูปภาพ / เอกสารชีทเรียน
+                  PDF / รูปภาพ / เอกสารชีทเรียน (ชื่อไฟล์จะใช้ค้นหาบทเรียนด้วย)
                 </span>
               </>
             )}
@@ -266,12 +343,11 @@ export default function InputSection() {
         </div>
       )}
 
-      {/* สรุป + ส่ง */}
       <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center">
         <p className="flex-1 text-xs text-slate-500">
           {hasContent ? (
             <>
-              พร้อมส่ง:{" "}
+              พร้อมค้น:{" "}
               {[
                 text.trim() && "ข้อความ",
                 links.length > 0 && `ลิงก์ ${links.length} รายการ`,
@@ -281,7 +357,7 @@ export default function InputSection() {
                 .join(" + ")}
             </>
           ) : (
-            "ยังไม่มีข้อมูล — เพิ่มข้อความ ลิงก์ หรือไฟล์ก่อนกดส่ง"
+            "ยังไม่มีข้อมูล — เพิ่มข้อความ ลิงก์ หรือไฟล์ก่อนกดค้น"
           )}
         </p>
         <button
@@ -290,9 +366,69 @@ export default function InputSection() {
           disabled={!hasContent}
           className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
         >
-          วิเคราะห์เนื้อหา →
+          🔍 ค้นหาบทเรียน →
         </button>
       </div>
+
+      {/* ผลการค้นหาจริง */}
+      {results !== null && (
+        <div className="mt-4 rounded-2xl border border-sky-200 bg-sky-50/50 p-4 sm:p-5">
+          <p className="text-sm font-bold text-slate-900">
+            🔍 ผลการค้นหา “{lastQuery.slice(0, 60)}”
+            {results.length > 0 && (
+              <span className="ml-2 font-medium text-slate-500">
+                เจอ {results.length} บทเรียน
+              </span>
+            )}
+          </p>
+          {results.length > 0 ? (
+            <ul className="mt-3 space-y-2.5">
+              {results.map((r, i) => (
+                <li
+                  key={`${r.subjectId}-${i}`}
+                  className="rounded-xl border border-slate-200 bg-white p-3.5"
+                >
+                  <p className="text-xs font-medium text-sky-700">
+                    {r.subjectTitle}
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-slate-900">
+                    {r.lessonTitle}
+                  </p>
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-500">
+                    {r.snippet}
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    <Link
+                      href={`/study/${r.subjectId}`}
+                      className="rounded-lg bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-700"
+                    >
+                      🧭 เรียนแบบนำทาง
+                    </Link>
+                    <Link
+                      href={`/quiz/${r.subjectId}`}
+                      className="rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50"
+                    >
+                      📝 สอบก่อนเรียน
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="mt-3 rounded-xl border border-dashed border-slate-300 bg-white p-4 text-center">
+              <p className="text-sm text-slate-500">
+                ยังไม่เจอบทเรียนที่ตรง ลองคำอื่น หรือเลือกวิชาในคลังเลย:
+              </p>
+              <Link
+                href="/learn"
+                className="mt-2 inline-block rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-700"
+              >
+                📚 เปิดคลังบทเรียนทั้งหมด
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }

@@ -69,7 +69,7 @@ export default async function SubjectPage({
         </div>
 
         {/* บทเรียน (ปรับความละเอียดได้ 2 ระดับ) */}
-        <LessonView lessons={subject.lessons} />
+        <LessonView lessons={subject.lessons} subjectId={subject.id} />
 
         <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2">
           {/* พื้นฐานที่ต้องรู้ก่อน */}
