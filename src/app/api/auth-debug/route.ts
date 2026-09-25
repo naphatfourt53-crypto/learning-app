@@ -13,18 +13,23 @@ export async function GET(req: Request) {
     "unknown";
   const proto = req.headers.get("x-forwarded-proto") ?? "https";
   const callbackUrl = `${proto}://${host}/api/auth/callback/github`;
-  const clientId = process.env.AUTH_GITHUB_ID ?? "";
-  const hasSecret = Boolean(process.env.AUTH_GITHUB_SECRET);
-  const hasAuthSecret = Boolean(process.env.AUTH_SECRET);
+  const clientId = (process.env.AUTH_GITHUB_ID ?? "").trim();
+  const clientSecret = (process.env.AUTH_GITHUB_SECRET ?? "").trim();
+  const authSecret = (process.env.AUTH_SECRET ?? "").trim();
+  const hasSecret = Boolean(clientSecret);
+  const hasAuthSecret = Boolean(authSecret);
 
   return NextResponse.json({
     host,
     callbackUrl,
-    providerConfigured: Boolean(clientId && process.env.AUTH_GITHUB_SECRET),
+    providerConfigured: Boolean(clientId && clientSecret),
     clientIdPrefix: clientId ? `${clientId.slice(0, 6)}…` : "(ยังไม่ตั้งค่า)",
     clientIdLength: clientId.length,
     hasClientSecret: hasSecret,
     hasAuthSecret,
+    // ตรวจคุณภาพค่าโดยไม่เปิดเผย: secret ต้องยาวพอและไม่มีช่องว่างติดมา
+    clientSecretLooksOk: clientSecret.length >= 20 && !/\s/.test(clientSecret),
+    authSecretLooksOk: authSecret.length >= 32 && !/\s/.test(authSecret),
     hint: "เอา callbackUrl ข้างบนไปใส่ใน GitHub OAuth App ช่อง Redirect URI เป๊ะๆ แล้วกด Update",
   });
 }
