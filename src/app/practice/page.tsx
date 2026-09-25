@@ -9,6 +9,7 @@ import PracticeRunner, {
   type PracticeConfig,
   type PracticeItem,
 } from "@/components/PracticeRunner";
+import HeaderMenu from "@/components/HeaderMenu";
 
 type Tab = "basic" | "advanced";
 type Purpose = "ทบทวนเนื้อหา" | "วัดพื้นฐานก่อนเรียน" | "เตรียมสอบจริง";
@@ -151,12 +152,15 @@ function PracticeBuilder() {
             </span>
             <p className="text-sm font-bold text-slate-900">สร้างแบบทดสอบเอง</p>
           </Link>
-          <Link
-            href="/"
-            className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
-          >
-            ← หน้าหลัก
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
+            >
+              ← หน้าหลัก
+            </Link>
+            <HeaderMenu />
+          </div>
         </div>
       </header>
 

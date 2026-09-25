@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 import type { QuizQuestion, QuizSet } from "@/data/quizzes";
 import AiHelp from "@/components/AiHelp";
 import MathText from "@/components/MathText";
+import { saveScore } from "@/lib/scores";
 
 type Mode = "before" | "after";
 type Kind = "single" | "multi" | "twotier";
@@ -61,6 +63,7 @@ export default function QuizRunner({
   onFinish?: (mode: Mode, percent: number) => void;
 }) {
   const [mode, setMode] = useState<Mode>(lockMode ?? "before");
+  const { data: session } = useSession();
   const [index, setIndex] = useState(0);
   const [single, setSingle] = useState<number | null>(null);
   const [multi, setMulti] = useState<number[]>([]);
@@ -152,6 +155,12 @@ export default function QuizRunner({
         /* private mode — ข้ามการจำคะแนน */
       }
       onFinish?.(mode, percent);
+      void saveScore(
+        subjectId,
+        mode,
+        percent,
+        session?.user?.name ?? session?.user?.email ?? "นักเรียน"
+      );
     } else {
       setIndex((v) => v + 1);
       resetQuestion();

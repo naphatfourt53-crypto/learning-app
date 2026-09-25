@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ALL_SUBJECTS, type Subject } from "@/data/curriculum";
 import { getQuiz } from "@/data/quizzes";
+import HeaderMenu from "@/components/HeaderMenu";
 
 function SubjectCard({ s }: { s: Subject }) {
   const q = getQuiz(s.id);
@@ -62,12 +63,15 @@ export default function LearnPage() {
               </p>
             </div>
           </Link>
-          <Link
-            href="/"
-            className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
-          >
-            ← หน้าหลัก
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
+            >
+              ← หน้าหลัก
+            </Link>
+            <HeaderMenu />
+          </div>
         </div>
       </header>
 

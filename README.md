@@ -54,6 +54,16 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 - mode `explain`: อธิบายเพิ่มหลังเห็นเฉลย (ใช้เฉลยเดิมเป็นบริบท)
 - ลำดับคีย์: `GEMINI_API_KEY` บนเซิร์ฟเวอร์ → คีย์ที่ผู้ใช้กรอก (เก็บใน localStorage เครื่องตัวเอง)
 
+## Leaderboard + Streak (Upstash Redis)
+
+- โค้ดพร้อมแล้ว: `POST/GET /api/scores` + หน้า `/leaderboard` + streak ในเครื่อง
+- ถ้ายังไม่ตั้งค่า DB: แอปทำงานต่อได้ปกติ (เก็บคะแนนดีสุด + streak ในเบราว์เซอร์, บอร์ดกลางโชว์ข้อความบอก)
+- วิธีเปิดบอร์ดกลาง:
+  1. Vercel → **Storage** → **Create Database** → **Upstash Redis** (ฟรี) → Connect กับโปรเจกต์
+     (หรือสร้างที่ upstash.com แล้วเอา REST URL + Token มากรอกเอง)
+  2. ใส่ env 2 ตัว: `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` → Redeploy
+  3. ทดสอบ: ทำข้อสอบ 1 ชุด → เปิด `/leaderboard` ต้องเห็นชื่อติดอันดับ
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

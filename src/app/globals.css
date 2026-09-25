@@ -42,3 +42,58 @@ pre {
   font-size: 1.08em;
   letter-spacing: 0.01em;
 }
+
+/* ===== โหมดกลางคืน (สลับด้วย class "dark" ที่ <html>) ===== */
+.dark {
+  color-scheme: dark;
+}
+.dark body {
+  background: #020617;
+}
+/* พื้นผิวหลัก: ขาว/เทาอ่อน → โทนมืด */
+.dark .bg-white {
+  background-color: #0f172a !important;
+}
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+.dark .bg-white\/80 {
+  background-color: rgb(15 23 42 / 0.9) !important;
+}
+/* ตัวหนังสือเทา → โทนสว่าง */
+.dark .text-slate-900 {
+  color: #f1f5f9 !important;
+}
+.dark .text-slate-800,
+.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+/* เส้นขอบ */
+.dark .border-slate-200,
+.dark .border-slate-300 {
+  border-color: #334155 !important;
+}
+.dark .ring-slate-300,
+.dark .ring-slate-200 {
+  --tw-ring-color: #475569 !important;
+}
+/* ปุ่มหลักเข้ม → กลับเป็นสว่างในโหมดกลางคืน */
+.dark .bg-slate-900.text-white {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+.dark .bg-slate-900.text-white:hover {
+  background-color: #cbd5e1 !important;
+}
+/* กล่องพาสเทลคงสีเดิม (อ่านได้อยู่แล้ว) แต่เงาเข้มขึ้น */
+.dark .shadow-sm {
+  --tw-shadow-color: rgb(0 0 0 / 0.5);
+}

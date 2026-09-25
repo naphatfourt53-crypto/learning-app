@@ -2,12 +2,20 @@
 // ครอบคลุม 4 วิชา: OOP, Calculus, React, Genetics
 // แต่ละวิชามี: บทเรียน + พื้นฐานที่ต้องรู้ก่อน + บทเรียนต่อยอด + แหล่งข้อมูลเพิ่มเติม
 
+export interface Drill {
+  q: string;
+  steps: string;
+  a: string;
+}
+
 export interface LessonSection {
   heading: string;
   body: string;
   example?: string;
   formula?: string;
   warning?: string;
+  /** โจทย์ตัวอย่างพร้อมวิธีทำทีละขั้น + คำตอบ */
+  drills?: Drill[];
 }
 
 export interface Lesson {

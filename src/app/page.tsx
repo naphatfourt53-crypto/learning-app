@@ -3,6 +3,7 @@ import InputSection from "@/components/InputSection";
 import RecommendationSection from "@/components/RecommendationSection";
 import QuizSection from "@/components/QuizSection";
 import UserButton from "@/components/UserButton";
+import HeaderMenu from "@/components/HeaderMenu";
 
 export default function Home() {
   return (
@@ -29,7 +30,10 @@ export default function Home() {
             <Link href="/quiz" className="hover:text-slate-900">แบบทดสอบ</Link>
             <Link href="/practice" className="hover:text-slate-900">ฝึกเอง 🎯</Link>
           </nav>
-          <UserButton />
+          <div className="flex shrink-0 items-center gap-2">
+            <UserButton />
+            <HeaderMenu />
+          </div>
         </div>
       </header>
 

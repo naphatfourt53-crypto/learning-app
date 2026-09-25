@@ -220,6 +220,23 @@ export default function LessonView({
                       <MathText text={s.example} />
                     </p>
                   )}
+                  {opts.showExamples && s.drills?.map((d, k) => (
+                    <details
+                      key={k}
+                      className={`mt-2.5 rounded-lg bg-violet-50/70 px-3.5 py-2.5 ${bodyCls}`}
+                    >
+                      <summary className="cursor-pointer font-bold text-violet-900">
+                        ✏️ โจทย์ตัวอย่างที่ {k + 1}: <MathText text={d.q} />
+                      </summary>
+                      <p className="mt-1.5 text-slate-700">
+                        <span className="font-semibold">วิธีทำ: </span>
+                        <MathText text={d.steps} />
+                      </p>
+                      <p className="mt-1 font-bold text-emerald-700">
+                        ตอบ: <MathText text={d.a} />
+                      </p>
+                    </details>
+                  ))}
                   {opts.showWarnings && s.warning && (
                     <p className={`mt-2.5 rounded-lg bg-amber-50 px-3.5 py-2.5 text-amber-900 ${bodyCls}`}>
                       <span className="font-bold">⚠️ ระวัง: </span>
